@@ -1,6 +1,6 @@
 package main
 
 func main() {
-	a := b
+	_ = 2
 	print(123)
 }
