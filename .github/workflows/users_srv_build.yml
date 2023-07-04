@@ -1,5 +1,5 @@
-name: ${{ github.actor }} UserSrv Build And Test
-run-name: 😀 ${{ github.actor }} UserS
+name: 'Build and Test Microservice'
+run-name: 🧑‍💻 ${{ github.actor }} UserSrv Build and Test.
 on: [ push ]
 
 jobs:
