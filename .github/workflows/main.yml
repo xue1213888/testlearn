@@ -9,4 +9,6 @@ jobs:
       - name: input
         run: echo $RUNDOM >> 1.txt
       - name: output
-        run: cat 1.txt
+        run: | 
+          ls
+          cat 1.txt
