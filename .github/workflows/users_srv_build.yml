@@ -6,9 +6,25 @@ jobs:
   test-jobs:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout code
+      - name: 1. 下载代码
         uses: actions/checkout@v3
-      - name: user build
-        uses: ./.github/actions/go-micro-service-build-and-test
+      - name: 2. 设置go版本
+        uses: actions/setup-go@v4
         with:
-          service: 'users'
+          go-version-file: 'go.mod'
+      - name: 3. 代码风格检查
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.53
+      - name: 4. 测试代码内容
+        run: |
+          echo '${inputs.service}'
+          go mod tidy
+          go build -v ./...
+          go test -v ./...
+        shell: bash
+      - name: 5. 验证结果
+        run: |
+          ls
+          pwd
+        shell: bash
