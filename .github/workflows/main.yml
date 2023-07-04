@@ -1,10 +1,14 @@
 name: test work
 run-name: test runs name
-on: [push]
+on: [ push ]
 
 jobs:
   test-jobs:
     runs-on: ubuntu-latest
     steps:
-      - name: test step
-        run: echo "test"
+      - name: Simple-Javascript
+        uses: Nagasree2000/Simple-Javascript@v1.0.2
+        with:
+          who-to-greet: Xsc
+      - name: over job
+        run: echo $steps
