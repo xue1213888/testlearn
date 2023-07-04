@@ -1,6 +1,7 @@
 package main
 
 func main() {
-	_ = 2
+	var a = 1
+	_ = a
 	print(123)
 }
