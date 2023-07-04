@@ -1,0 +1,10 @@
+name: test work
+runs-name: test runs name
+on: [push]
+
+jobs:
+  test-jobs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: test step
+        run: echo "test"
