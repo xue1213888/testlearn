@@ -9,6 +9,10 @@ jobs:
       - name: input
         run: echo 'nmsl' >> 1.txt
       - name: output
-        run: | 
+        run: |
           ls
           cat 1.txt
+      - uses: actions/upload-artifact@v3
+        with:
+          name: 2.txt
+          path: 1.txt
