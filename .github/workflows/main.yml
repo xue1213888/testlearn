@@ -9,6 +9,6 @@ jobs:
       - name: checkout code
         uses: actions/checkout@v3
       - name: user build
-        user: ./.github/actions/micro_service_build_and_test.yml
+        uses: ./.github/actions/micro_service_build_and_test.yml
         with:
           service: 'users'
