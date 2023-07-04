@@ -6,9 +6,7 @@ jobs:
   test-jobs:
     runs-on: ubuntu-latest
     steps:
-      - name: Simple-Javascript
-        uses: Nagasree2000/Simple-Javascript@v1.0.2
-        with:
-          who-to-greet: Xsc
-      - name: over job
-        run: echo $steps
+      - name: input
+        run: echo $RUNDOM >> 1.txt
+      - name: output
+        run: cat 1.txt
