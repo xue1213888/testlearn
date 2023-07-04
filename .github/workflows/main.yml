@@ -8,6 +8,9 @@ jobs:
     steps:
       - name: checkout code
         uses: actions/checkout@v3
+      - run: |
+          ls
+          tree
       - name: user build
         uses: ./.github/actions/micro_service_build_and_test.yml
         with:
