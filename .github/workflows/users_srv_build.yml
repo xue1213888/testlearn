@@ -1,5 +1,5 @@
-name: test work
-run-name: test runs name
+name: ${{ github.actor }} UserSrv Build And Test
+run-name: 😀 ${{ github.actor }} UserS
 on: [ push ]
 
 jobs:
