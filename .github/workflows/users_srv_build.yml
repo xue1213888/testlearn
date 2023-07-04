@@ -20,7 +20,7 @@ jobs:
         run: |
           echo '${inputs.service}'
           go mod tidy
-          go build -o users_srv ./servers/users_srv/main.go
+          go build -o users_srv ./servers/users/main.go
           go test -v ./...
           ./users_srv
         shell: bash
