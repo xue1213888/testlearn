@@ -19,8 +19,7 @@ runs:
         version: v1.53
     - name: check go
       run: |
-        echo '${INPUT}'
+        echo '${inputs.service}'
         go mod tidy
-        golangci-lint run
         go test -v ./...
       shell: bash
