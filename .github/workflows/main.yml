@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: input
-        run: echo $RUNDOM >> 1.txt
+        run: echo 'nmsl' >> 1.txt
       - name: output
         run: | 
           ls
