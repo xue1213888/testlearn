@@ -1,0 +1,25 @@
+name: 'Build and Test Microservice'
+description: 'Builds and Tests a Microservice'
+
+inputs:
+  service:
+    description: 'Microservice name'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: echo
+      run: |
+        pwd
+        ls
+    - name: setup go versions
+      uses: actions/setup-go@v4
+      with:
+        go-version-file: 'go.mod'
+    - name: Setup GolangCI-Lint
+      uses: golangci/golangci-lint-action@v3
+      with:
+        version: v1.53
+    - name: test
+      run: go env

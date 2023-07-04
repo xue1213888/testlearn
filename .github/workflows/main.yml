@@ -6,13 +6,9 @@ jobs:
   test-jobs:
     runs-on: ubuntu-latest
     steps:
-      - name: input
-        run: echo 'nmsl' >> 1.txt
-      - name: output
-        run: |
-          ls
-          cat 1.txt
-      - uses: actions/upload-artifact@v3
+      - name: checkout code
+        uses: actions/checkout@v3
+      - name: user build
+        user: ./.github/actions/micro_service_build_and_test.yml
         with:
-          name: 2.txt
-          path: 1.txt
+          service: 'users'
