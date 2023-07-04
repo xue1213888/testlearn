@@ -9,19 +9,18 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: echo a name
-      run: |
-        pwd
-        ls
-      shell: bash
     - name: setup go versions
       uses: actions/setup-go@v4
       with:
         go-version-file: 'go.mod'
-    - name: Setup GolangCI-Lint
+    - name: golang-ci-lint
       uses: golangci/golangci-lint-action@v3
       with:
         version: v1.53
-    - name: test
-      run: go env
+    - name: check go
+      run: |
+        echo '${INPUT}'
+        go mod tidy
+        golangci-lint run
+        go test -v ./...
       shell: bash
