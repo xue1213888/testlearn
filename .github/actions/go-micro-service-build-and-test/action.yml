@@ -9,10 +9,11 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: echo
+    - name: echo a name
       run: |
         pwd
         ls
+      shell: bash
     - name: setup go versions
       uses: actions/setup-go@v4
       with:
@@ -23,3 +24,4 @@ runs:
         version: v1.53
     - name: test
       run: go env
+      shell: bash
