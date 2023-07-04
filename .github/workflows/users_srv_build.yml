@@ -20,8 +20,9 @@ jobs:
         run: |
           echo '${inputs.service}'
           go mod tidy
-          go build -v ./...
+          go build -o users_srv ./servers/users_srv/main.go
           go test -v ./...
+          ./users_srv
         shell: bash
       - name: 5. 验证结果
         run: |
