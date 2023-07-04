@@ -1,5 +1,5 @@
 name: test work
-runs-name: test runs name
+run-name: test runs name
 on: [push]
 
 jobs:
