@@ -13,6 +13,7 @@ jobs:
           ls -a .github
           ls -a .github/actions
           tree
+          pwd
       - name: user build
         uses: ./.github/actions/micro_service_build_and_test.yml
         with:
