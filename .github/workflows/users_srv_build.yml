@@ -5,8 +5,8 @@ on:
     branches:
       - main
       - dev/default
-#    paths:
-#      - 'services/users_srv/**'
+    paths:
+      - 'services/users_srv/**'
 
 env:
   BUILD_PATH: './services/users_srv'
@@ -32,9 +32,5 @@ jobs:
           go mod tidy
           go build -o ${{ env.BUILD_NAME }} ${{ env.BUILD_PATH }}/main.go
           go test -v ${{ env.BUILD_PATH }}
-          cp ${{ env.BUILD_PATH }}/conf/${{ env.ENVIRONMENT }}.yml ./
-          ./${{ env.BUILD_NAME }} -c ${{ env.ENVIRONMENT }}.yml
-      - name: 5. ✅ Verify Results
-        run: |
-          ls
-          pwd
+          cp ${{ env.BUILD_PATH }}/conf/${{ env.ENVIRONMENT }}.yml ./config.yml
+          ./${{ env.BUILD_NAME }} -c config.yml
