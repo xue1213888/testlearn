@@ -44,7 +44,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: '.'
-          dockerfile: './Dockerfile'
+          dockerfile: './build/amd64/Dockerfile'
           push: true
           tags: '${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}:latest'
           platforms: 'linux/amd64'
@@ -52,7 +52,7 @@ jobs:
 #        uses: docker/build-push-action@v4
 #        with:
 #          context: '.'
-#          dockerfile: './arm64.Dockerfile'
+#          dockerfile: './build/arm64/Dockerfile'
 #          push: true
 #          tags: '${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}:latest'
 #          platforms: 'linux/arm64'
