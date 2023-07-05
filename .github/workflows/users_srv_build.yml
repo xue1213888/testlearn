@@ -46,9 +46,7 @@ jobs:
           context: '.'
           dockerfile: './amd64.Dockerfile'
           push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}:latest
-#            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}:${{ github.ref_name }}
+          tags: '${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}:latest'
           platforms: 'linux/amd64'
       - name: 7. 📦 Build and push Docker image <arm64>
         uses: docker/build-push-action@v4
@@ -56,7 +54,5 @@ jobs:
           context: '.'
           dockerfile: './arm64.Dockerfile'
           push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}:latest
-#            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}:${{ github.ref_name }}
+          tags: '${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}:latest'
           platforms: 'linux/arm64'
