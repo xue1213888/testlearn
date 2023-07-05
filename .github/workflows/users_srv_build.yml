@@ -5,8 +5,8 @@ on:
     branches:
       - main
       - dev/default
-    paths:
-      - 'services/users_srv/**'
+#    paths:
+#      - 'services/users_srv/**'
 
 env:
   BUILD_PATH: './services/users_srv'
