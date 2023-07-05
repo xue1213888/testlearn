@@ -33,8 +33,8 @@ jobs:
           go mod tidy
           GOOS=linux GOARCH=amd64 go build -o ${{ env.BUILD_NAME }}-amd64 ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/main.go
           GOOS=linux GOARCH=arm64 go build -o ${{ env.BUILD_NAME }}-arm64 ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/main.go
-          go test -v ${{ env.BUILD_PATH }}
-          cp ${{ env.BUILD_PATH }}/conf/${{ env.ENVIRONMENT }}.yml ./config.yml
+          go test -v ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}
+          cp ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/conf/${{ env.ENVIRONMENT }}.yml ./config.yml
       - name: 5. 🧑‍🔧 Login to Docker Hub
         uses: docker/login-action@v2
         with:
