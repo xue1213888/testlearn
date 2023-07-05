@@ -32,6 +32,10 @@ jobs:
           version: v1.53
       - name: 4. 🧪 Test Code & 🏗️ Build
         run: |
+          echo ${{ env.BUILD_PATH }}
+          echo ${{ env.BUILD_NAME }}
+          echo ${{ github }}
+          echo ${{ event }}
           go mod tidy
           go build -o ${{ env.BUILD_NAME }} ${{ env.BUILD_PATH }}/main.go
           go test -v ${{ env.BUILD_PATH }}
