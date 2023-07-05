@@ -10,7 +10,7 @@ on:
 
 env:
   BUILD_SRV: 'users_srv'
-  BUILD_PATH: './services/${{ env.BUILD_SRV }}'
+  BUILD_PATH: './services'
   BUILD_NAME: 'srv'
   ENVIRONMENT: ${{ (github.ref == 'refs/heads/main' && 'prod') || (github.ref == 'refs/heads/dev/default' && 'dev') }}
 
@@ -31,8 +31,8 @@ jobs:
       - name: 4. 🧪 Test Code & 🏗️ Build
         run: |
           go mod tidy
-          GOOS=linux GOARCH=amd64 go build -o ${{ env.BUILD_NAME }}-amd64 ${{ env.BUILD_PATH }}/main.go
-          GOOS=linux GOARCH=arm64 go build -o ${{ env.BUILD_NAME }}-arm64 ${{ env.BUILD_PATH }}/main.go
+          GOOS=linux GOARCH=amd64 go build -o ${{ env.BUILD_NAME }}-amd64 ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/main.go
+          GOOS=linux GOARCH=arm64 go build -o ${{ env.BUILD_NAME }}-arm64 ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/main.go
           go test -v ${{ env.BUILD_PATH }}
           cp ${{ env.BUILD_PATH }}/conf/${{ env.ENVIRONMENT }}.yml ./config.yml
       - name: 5. 🧑‍🔧 Login to Docker Hub
