@@ -7,6 +7,9 @@ on:
       - dev/default
 #    paths:
 #      - 'services/users_srv/**'
+#    tags:
+#      - 'v*'
+  workflow_dispatch:
 
 env:
   BUILD_SRV: 'users_srv'
@@ -21,6 +24,10 @@ jobs:
       matrix:
         arch: [amd64, arm64]
     steps:
+      - name: 0. 🌍 Set time zone
+        uses: szenius/set-timezone@v1.1
+        with:
+          timezoneLinux: "Asia/Shanghai"
       - name: 1. 📦 Checkout Code
         uses: actions/checkout@v3
       - name: 2. 🚀 Set up Go
@@ -42,12 +49,47 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: 6. 📦 Build and push Docker image <amd64>
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}
+          # generate Docker tags based on the following events/attributes
+          #   nightly, master, pr-2, 1.2.3, 1.2, 1
+          tags: |
+            type=schedule,pattern=nightly
+            type=edge
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            
+            
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and push
+        id: docker_build
         uses: docker/build-push-action@v4
         with:
-          context: '.'
-          dockerfile: './Dockerfile'
+          context: .
           push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}:latest
-          platforms: 'linux/${{ matrix.arch }}'
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+#      - name: 6. 📦 Build and push Docker image <amd64>
+#        uses: docker/build-push-action@v4
+#        with:
+#          context: '.'
+#          dockerfile: './Dockerfile'
+#          push: true
+#          tags: |
+#            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}:latest
+#          platforms: 'linux/${{ matrix.arch }}'
