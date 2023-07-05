@@ -1,7 +1,15 @@
 package main
 
-import "fmt"
+import (
+	"flag"
+	"fmt"
+	"os"
+)
 
 func main() {
-	fmt.Println("hello world dev")
+	fileName := flag.String("c", "conf/prod.yml", "config file path")
+	flag.Parse()
+
+	b, _ := os.ReadFile(*fileName)
+	fmt.Println("dev:" + string(b))
 }

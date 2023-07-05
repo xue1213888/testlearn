@@ -11,7 +11,7 @@ on:
 env:
   BUILD_PATH: './services/users_srv'
   BUILD_NAME: 'srv'
-  ENVIRONMENT: ${{ (github.ref == 'refs/heads/main') && 'prod' || 'dev' }}
+  ENVIRONMENT: ${{ (github.ref == 'refs/heads/main' && 'prod') || (github.ref == 'refs/heads/dev/default' && 'dev') }}
 
 jobs:
   test-jobs:
@@ -29,14 +29,11 @@ jobs:
           version: v1.53
       - name: 4. 🧪 Test Code & 🏗️ Build
         run: |
-          echo ${{ (github.ref == 'refs/heads/main') && 'prod' || 'dev' }}
-          echo ${{ env.BUILD_PATH }}
-          echo ${{ env.BUILD_NAME }}
-          echo ${{ fromJSON(github) }}
           go mod tidy
           go build -o ${{ env.BUILD_NAME }} ${{ env.BUILD_PATH }}/main.go
           go test -v ${{ env.BUILD_PATH }}
-          ./${{ env.BUILD_NAME }}
+          cp ${{ env.BUILD_PATH }}/conf/${{ env.ENVIRONMENT }}.yml ./
+          ./${{ env.BUILD_NAME }} -c ${{ env.ENVIRONMENT }}.yml
       - name: 5. ✅ Verify Results
         run: |
           ls
