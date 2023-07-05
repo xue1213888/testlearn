@@ -43,12 +43,25 @@ jobs:
           go test -v ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}
           cp ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/conf/${{ env.ENVIRONMENT }}.yml ./config.yml
       - uses: mr-smithers-excellent/docker-build-push@v6
-        name: Build & push Docker image
+        name: Build & push Docker image amd64
         with:
           image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}
           registry: docker.io
+          addLatest: true
           multiPlatform: true
-          platform: linux/amd64,linux/arm64
+          dockerfile: './Dockerfile.amd64'
+          platform: linux/amd64
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: mr-smithers-excellent/docker-build-push@v6
+        name: Build & push Docker image arm64
+        with:
+          image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}
+          registry: docker.io
+          addLatest: true
+          multiPlatform: true
+          dockerfile: './Dockerfile.arm64'
+          platform: linux/arm64
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 #      - name: 5. 🧑‍🔧 Login to Docker Hub
@@ -75,7 +88,7 @@ jobs:
 #        uses: docker/build-push-action@v4
 #        with:
 #          context: '.'
-#          dockerfile: './Dockerfile'
+#          dockerfile: './Dockerfile.amd64'
 #          push: true
 #          tags: |
 #            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}:latest
