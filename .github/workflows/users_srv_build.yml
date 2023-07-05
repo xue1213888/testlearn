@@ -1,6 +1,20 @@
 name: 'Build and Test Microservice'
 run-name: 🧑‍💻 ${{ github.actor }} UserSrv Build and Test.
-on: [ push ]
+on:
+  push:
+    branches:
+      - dev/default
+    paths:
+      - 'services/users_srv/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'services/users_srv/**'
+
+env:
+  BUILD_PATH: './services/users_srv'
+  BUILD_NAME: 'srv'
 
 jobs:
   test-jobs:
@@ -19,9 +33,9 @@ jobs:
       - name: 4. 🧪 Test Code & 🏗️ Build
         run: |
           go mod tidy
-          go build -o users_srv ./servers/users/main.go
-          go test -v ./...
-          ./users_srv
+          go build -o ${{ env.BUILD_NAME }} ${{ env.BUILD_PATH }}/main.go
+          go test -v ${{ env.BUILD_PATH }}
+          ./${{ env.BUILD_NAME }}
       - name: 5. ✅ Verify Results
         run: |
           ls
