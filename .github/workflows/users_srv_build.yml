@@ -48,7 +48,7 @@ jobs:
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}:${{ github.ref_name }}
+#            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}:${{ github.ref_name }}
           platforms: 'linux/amd64'
       - name: 7. 📦 Build and push Docker image <arm64>
         uses: docker/build-push-action@v4
@@ -58,5 +58,5 @@ jobs:
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}:${{ github.ref_name }}
+#            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}:${{ github.ref_name }}
           platforms: 'linux/arm64'
