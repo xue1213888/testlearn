@@ -5,8 +5,8 @@ on:
     branches:
       - main
       - dev/default
-    paths:
-      - 'services/users_srv/**'
+#    paths:
+#      - 'services/users_srv/**'
 
 env:
   BUILD_PATH: './services/users_srv'
@@ -17,6 +17,8 @@ jobs:
   test-jobs:
     runs-on: ubuntu-latest
     steps:
+      - name: 0. 🌐 Set Timezone to Asia/Shanghai
+        run: echo 'Asia/Shanghai' | sudo tee /etc/timezone && sudo dpkg-reconfigure --frontend noninteractive tzdata
       - name: 1. 📦 Checkout Code
         uses: actions/checkout@v3
       - name: 2. 🚀 Set up Go
