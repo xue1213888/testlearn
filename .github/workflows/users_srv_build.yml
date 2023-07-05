@@ -2,13 +2,10 @@ name: 'Build and Test Microservice'
 run-name: 🧑‍💻 ${{ github.actor }} UserSrv Build and Test.
 on:
   push:
-    branches:
-      - dev/default
-    paths:
-      - 'services/users_srv/**'
   pull_request:
     branches:
       - main
+      - dev/default
     paths:
       - 'services/users_srv/**'
 
@@ -35,7 +32,6 @@ jobs:
           echo ${{ env.BUILD_PATH }}
           echo ${{ env.BUILD_NAME }}
           echo ${{ github }}
-          echo ${{ event }}
           go mod tidy
           go build -o ${{ env.BUILD_NAME }} ${{ env.BUILD_PATH }}/main.go
           go test -v ${{ env.BUILD_PATH }}
