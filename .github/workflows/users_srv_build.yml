@@ -18,7 +18,6 @@ jobs:
           version: v1.53
       - name: 4. 测试代码内容
         run: |
-          echo '${inputs.service}'
           go mod tidy
           go build -o users_srv ./servers/users/main.go
           go test -v ./...
