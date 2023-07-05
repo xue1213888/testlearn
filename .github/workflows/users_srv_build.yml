@@ -34,4 +34,16 @@ jobs:
           GOOS=linux GOARCH=${{ env.ARCH }} go build -o ${{ env.BUILD_NAME }} ${{ env.BUILD_PATH }}/main.go
           go test -v ${{ env.BUILD_PATH }}
           cp ${{ env.BUILD_PATH }}/conf/${{ env.ENVIRONMENT }}.yml ./config.yml
-          ./${{ env.BUILD_NAME }} -c config.yml
+      - name: 5. 🧑‍🔧 Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: 6. 📦 Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: '.'
+          dockerfile: './Dockerfile'
+          push: true
+          tags: '${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_NAME }}:latest'
+          platforms: 'linux/${{ env.ARCH }}'
