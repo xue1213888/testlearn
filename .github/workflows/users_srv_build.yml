@@ -42,6 +42,11 @@ jobs:
           GOOS=linux GOARCH=arm64 go build -o ${{ env.BUILD_NAME }}-arm64 ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/main.go
           go test -v ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}
           cp ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/conf/${{ env.ENVIRONMENT }}.yml ./config.yml
+
+      - uses: docker/setup-buildx-action@v2
+        name: Customize Docker driver
+        with:
+          driver-opts: image=moby/buildkit:v0.11.0
       - uses: mr-smithers-excellent/docker-build-push@v6
         name: Build & push Docker image amd64
         with:
@@ -50,6 +55,7 @@ jobs:
           addLatest: true
           multiPlatform: true
           dockerfile: './Dockerfile.amd64'
+          overrideDriver: true
           platform: linux/amd64
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -61,6 +67,7 @@ jobs:
           addLatest: true
           multiPlatform: true
           dockerfile: './Dockerfile.arm64'
+          overrideDriver: true
           platform: linux/arm64
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
