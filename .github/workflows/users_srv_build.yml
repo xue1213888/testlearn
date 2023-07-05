@@ -6,23 +6,23 @@ jobs:
   test-jobs:
     runs-on: ubuntu-latest
     steps:
-      - name: 1. 下载代码
+      - name: 1. 📦 Checkout Code
         uses: actions/checkout@v3
-      - name: 2. 设置go版本
+      - name: 2. 🚀 Set up Go
         uses: actions/setup-go@v4
         with:
           go-version-file: 'go.mod'
-      - name: 3. 代码风格检查
+      - name: 3. 🧹 Code Linting
         uses: golangci/golangci-lint-action@v3
         with:
           version: v1.53
-      - name: 4. 测试代码内容
+      - name: 4. 🧪 Test Code & 🏗️ Build
         run: |
           go mod tidy
           go build -o users_srv ./servers/users/main.go
           go test -v ./...
           ./users_srv
-      - name: 5. 验证结果
+      - name: 5. ✅ Verify Results
         run: |
           ls
           pwd
