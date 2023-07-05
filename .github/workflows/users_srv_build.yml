@@ -49,6 +49,5 @@ jobs:
           dockerfile: './Dockerfile'
           push: true
           tags: |
-            '${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}:latest'
-            '${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}:${{ env.ENVIRONMENT }}'
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}:latest
           platforms: 'linux/${{ matrix.arch }}'
