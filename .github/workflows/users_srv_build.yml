@@ -32,7 +32,7 @@ jobs:
           echo ${{ (github.ref == 'refs/heads/main') && 'prod' || 'dev' }}
           echo ${{ env.BUILD_PATH }}
           echo ${{ env.BUILD_NAME }}
-          echo ${{ toJSON(github) }}
+          echo ${{ fromJSON(github) }}
           go mod tidy
           go build -o ${{ env.BUILD_NAME }} ${{ env.BUILD_PATH }}/main.go
           go test -v ${{ env.BUILD_PATH }}
