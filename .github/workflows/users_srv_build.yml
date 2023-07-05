@@ -67,7 +67,6 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
             
-            
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
@@ -84,6 +83,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64/v8
 #      - name: 6. 📦 Build and push Docker image <amd64>
 #        uses: docker/build-push-action@v4
 #        with:
