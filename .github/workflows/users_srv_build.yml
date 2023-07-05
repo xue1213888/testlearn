@@ -17,6 +17,9 @@ env:
 jobs:
   test-jobs:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
     steps:
       - name: 1. 📦 Checkout Code
         uses: actions/checkout@v3
@@ -31,8 +34,7 @@ jobs:
       - name: 4. 🧪 Test Code & 🏗️ Build
         run: |
           go mod tidy
-          GOOS=linux GOARCH=amd64 go build -o ${{ env.BUILD_NAME }}-amd64 ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/main.go
-          GOOS=linux GOARCH=arm64 go build -o ${{ env.BUILD_NAME }}-arm64 ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/main.go
+          GOOS=linux GOARCH=${{ matrix.arch }} go build -o ${{ env.BUILD_NAME }} ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/main.go
           go test -v ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}
           cp ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/conf/${{ env.ENVIRONMENT }}.yml ./config.yml
       - name: 5. 🧑‍🔧 Login to Docker Hub
@@ -44,15 +46,9 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: '.'
-          dockerfile: './build/amd64/Dockerfile'
+          dockerfile: './Dockerfile'
           push: true
-          tags: '${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}:latest'
-          platforms: 'linux/amd64'
-#      - name: 7. 📦 Build and push Docker image <arm64>
-#        uses: docker/build-push-action@v4
-#        with:
-#          context: '.'
-#          dockerfile: './build/arm64/Dockerfile'
-#          push: true
-#          tags: '${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}:latest'
-#          platforms: 'linux/arm64'
+          tags: |
+            '${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}:latest'
+            '${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}:${{ env.ENVIRONMENT }}'
+          platforms: 'linux/${{ matrix.arch }}'
