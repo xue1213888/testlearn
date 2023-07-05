@@ -23,9 +23,7 @@ jobs:
           go build -o users_srv ./servers/users/main.go
           go test -v ./...
           ./users_srv
-        shell: bash
       - name: 5. 验证结果
         run: |
           ls
           pwd
-        shell: bash
