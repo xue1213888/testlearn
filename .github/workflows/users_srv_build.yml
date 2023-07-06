@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: echo git
-        if: ${{ env.BUILD_DEV || env.BUILD_PROD }}
+        if: ${{ env.BUILD_DEV == true || env.BUILD_PROD == true }}
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo $GITHUB_CONTEXT
