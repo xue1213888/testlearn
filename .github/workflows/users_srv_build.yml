@@ -2,54 +2,47 @@ name: 'Build and Test Microservice'
 run-name: 🧑‍💻 ${{ github.actor }} UserSrv Build and Test.
 on:
   push:
+    paths:
+      - 'services/users_srv/**'
     branches:
       - main
       - dev
-  #    paths:
-  #      - 'services/users_srv/**'
     tags:
       - 'v*'
   workflow_dispatch:
 env:
   BUILD_SRV: 'users_srv'
   BUILD_PATH: './services'
-  BUILD_NAME: 'srv'
   BUILD_PROD: ${{ (github.ref_type == 'tag') && (github.event.base_ref == 'refs/heads/main') }}
+  BUILD_TEST: ${{ (github.ref_type == 'tag') }}
   BUILD_DEV: ${{ (github.ref == 'refs/heads/main') || (github.ref == 'refs/heads/dev') }}
-  BUILD_TAG: ${{ github.ref_name }}
-
 
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
     steps:
-      - name: -1. check 是否允许构建
-        run: |
-          if [[ ${{ env.BUILD_DEV }} == false && ${{ env.BUILD_PROD }} == false ]]; then 
-            echo "当前不允许构建"
-            exit 1
-          fi
-      - name: 0. 🌍 Set Time Zone
-        uses: szenius/set-timezone@v1.1
-        with:
-          timezoneLinux: "Asia/Shanghai"
       - name: 1. 📦 Checkout Repository
         uses: actions/checkout@v3
+
       - name: 2. 🚀 Setup Go Environment
         uses: actions/setup-go@v4
         with:
           go-version-file: 'go.mod'
+
       - name: 3. 🧹 Lint Code
         uses: golangci/golangci-lint-action@v3
         with:
           version: v1.53
+
       - name: 4. 🧪 Test & 🏗️ Build Services
+        env:
+          BUILD_CONFIG: ${{ (env.BUILD_PROD == true && 'prod') || (env.BUILD_TEST == true && 'test') || 'dev' }}
         run: |
           go mod tidy
-          GOOS=linux GOARCH=amd64 go build -o ${{ env.BUILD_NAME }}-amd64 ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/main.go
-          GOOS=linux GOARCH=arm64 go build -o ${{ env.BUILD_NAME }}-arm64 ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/main.go
+          GOOS=linux GOARCH=amd64 go build -o srv-amd64 ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/main.go
+          GOOS=linux GOARCH=arm64 go build -o srv-arm64 ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/main.go
           go test -v ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}
-          cp ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/conf/${{ env.BUILD_PROD == true && 'prod' || 'dev' }}.yml ./config.yml
+          cp ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/conf/${{ env.BUILD_CONFIG }}.yml ./config.yml
 
       - name: 5. 🐳 Customize Docker driver
         uses: docker/setup-buildx-action@v2
@@ -62,6 +55,8 @@ jobs:
           TAGS=()
           if [[ ${{env.BUILD_PROD}} == true ]]; then
             TAGS=("${{ env.BUILD_SRV }}-latest","${{ env.BUILD_SRV }}-prod")
+          elif [[ ${{env.BUILD_TEST}} == true ]]; then
+            TAGS=("${{ env.BUILD_SRV }}-test")
           elif [[ ${{env.BUILD_DEV}} == true ]]; then
             TAGS=("${{ env.BUILD_SRV }}-dev")
           fi
