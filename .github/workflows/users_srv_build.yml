@@ -7,8 +7,8 @@ on:
       - dev/default
   #    paths:
   #      - 'services/users_srv/**'
-  #    tags:
-  #      - 'v*'
+    tags:
+      - 'v*'
   workflow_dispatch:
 
 env:
