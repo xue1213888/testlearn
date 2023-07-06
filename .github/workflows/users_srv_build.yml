@@ -16,6 +16,7 @@ env:
   BUILD_PATH: './services'
   BUILD_NAME: 'srv'
   ENVIRONMENT: ${{ (github.ref == 'refs/heads/main' && 'prod') || (github.ref == 'refs/heads/dev/default' && 'dev') }}
+  TAGS:
 
 jobs:
   build_and_test:
@@ -47,6 +48,19 @@ jobs:
         uses: docker/setup-buildx-action@v2
         with:
           driver-opts: image=moby/buildkit:v0.11.0
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/hero300
+          tags: |
+            type=ref,event=branch
+            type=ref,event=tag
+      - name: temp very
+        run: |
+          echo ${{ steps.meta.outputs.tags }}
+          sed -i 's/:/:users_srv-/g' ${{ steps.meta.outputs.tags }}
       - name: 6. 🚢 Build & Push Docker Image
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
@@ -56,6 +70,8 @@ jobs:
           multiPlatform: true
           dockerfile: './Dockerfile'
           overrideDriver: true
+          tags: ${{ steps.meta.outputs.tags }}
           platform: linux/amd64,linux/arm64
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+#
