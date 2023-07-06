@@ -24,10 +24,8 @@ jobs:
     if: ${{ env.BUILD_DEV == true || env.BUILD_PROD == true }}
     runs-on: ubuntu-latest
     steps:
-      - name: echo git
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo $GITHUB_CONTEXT
+      - name: -1. check 是否允许构建
+        run: if [[ ${{ env.BUILD_DEV }} == false && ${{ env.BUILD_PROD }} == false ]]; then exit 1; fi
       - name: 0. 🌍 Set Time Zone
         uses: szenius/set-timezone@v1.1
         with:
