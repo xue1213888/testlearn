@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - dev/default
+      - dev
   #    paths:
   #      - 'services/users_srv/**'
     tags:
@@ -15,12 +15,17 @@ env:
   BUILD_SRV: 'users_srv'
   BUILD_PATH: './services'
   BUILD_NAME: 'srv'
-  ENVIRONMENT: ${{ (github.ref == 'refs/heads/main' && 'prod') || (github.ref == 'refs/heads/dev/default' && 'dev') || 'prod' }}
-  TAGS:
+  BUILD_PROD: ${{ (github.ref_type == 'tag') && (github.event.base_ref == 'refs/heads/main') }}
+  BUILD_DEV: ${{ (github.ref == 'refs/heads/main') || (github.ref == 'refs/heads/dev') }}
+  BUILD_TAG: ${{ github.ref_name }}
 
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
+    env:
+      ENVIRONMENT: ${{ ( env.BUILD_PROD && 'prod' ) || ( env.BUILD_DEV && 'dev' ) || false }}
+      DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/hero300:${{ env.BUILD_SRV }}-
+    if: ${{ env.ENVIRONMENT }}
     steps:
       - name: echo git
         env:
@@ -52,28 +57,18 @@ jobs:
         uses: docker/setup-buildx-action@v2
         with:
           driver-opts: image=moby/buildkit:v0.11.0
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/hero300
-          tags: |
-            type=ref,event=branch
-            type=ref,event=tag
-      - name: temp very
-        run: |
-          echo ${{ steps.meta.outputs.tags }}
+
       - name: 6. 🚢 Build & Push Docker Image
         uses: mr-smithers-excellent/docker-build-push@v6
+        env:
+          TAGS: ${{ env.BUILD_PROD && [ '${ env.DOCKER_IMAGE }latest', '${ env.DOCKER_IMAGE }${ env.BUILD_TAG }' ] || ['${ env.DOCKER_IMAGE }dev'] }}
         with:
           image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}
           registry: docker.io
-          addLatest: ${{ env.ENVIRONMENT == 'prod' }}
           multiPlatform: true
           dockerfile: './Dockerfile'
           overrideDriver: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ env.TAGS }}
           platform: linux/amd64,linux/arm64
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
