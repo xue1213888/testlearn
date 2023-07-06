@@ -58,7 +58,7 @@ jobs:
       - name: 6. 🚢 Set Docker Image Tags
         id: set_tags
         env:
-          IMAGE_PREFIX: ${{ secrets.DOCKERHUB_USERNAME }}/hero300:${{ env.BUILD_SRV }}-
+          IMAGE_PREFIX: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.repository.name }}:${{ env.BUILD_SRV }}-
           BUILD_ENV: ${{ ( env.BUILD_PROD && 'prod' ) || ( env.BUILD_DEV && 'dev' ) || '' }}
         run: |
           TAGS=""
@@ -72,7 +72,7 @@ jobs:
       - name: 7. 🚢 Build & Push Docker Image
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
-          image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}
+          image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.repository.name }}
           registry: docker.io
           multiPlatform: true
           dockerfile: './Dockerfile'
