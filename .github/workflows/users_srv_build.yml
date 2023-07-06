@@ -23,7 +23,7 @@ jobs:
     steps:
       - name: 0. echo
         env:
-          GITHUB_BASE_REF: ${{ github.base_ref }}
+          GITHUB_BASE_REF: ${{ GITHUB_BASE_REF }}
           CONTEXT: ${{ toJson(github) }}
         run: |
           echo "1"
