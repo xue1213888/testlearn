@@ -23,13 +23,14 @@ jobs:
     steps:
       - name: 0. echo
         env:
-          GITHUB_BASE_REF: ${{ GITHUB_BASE_REF }}
           CONTEXT: ${{ toJson(github) }}
         run: |
           echo "1"
 
       - name: 1. 📦 Checkout Repository
         uses: actions/checkout@v3
+
+      - uses: technote-space/get-diff-action@v6
 
       - name: 2. 🚀 Setup Go Environment
         uses: actions/setup-go@v4
