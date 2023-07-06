@@ -22,10 +22,10 @@ env:
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
-    env:
+#    env:
 #      ENVIRONMENT: ${{ ( env.BUILD_PROD && 'prod' ) || ( env.BUILD_DEV && 'dev' ) || false }}
 #      DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/hero300:${{ env.BUILD_SRV }}-
-    if: ${{ env.ENVIRONMENT }}
+#    if: ${{ env.ENVIRONMENT }}
     steps:
       - name: echo git
         env:
