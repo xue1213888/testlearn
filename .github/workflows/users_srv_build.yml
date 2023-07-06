@@ -22,10 +22,7 @@ env:
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
-#    env:
-#      ENVIRONMENT: ${{ ( env.BUILD_PROD && 'prod' ) || ( env.BUILD_DEV && 'dev' ) || false }}
-#      DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/hero300:${{ env.BUILD_SRV }}-
-#    if: ${{ env.ENVIRONMENT }}
+    if: ${{ env.BUILD_DEV || env.BUILD_PROD }}
     steps:
       - name: echo git
         env:
@@ -61,6 +58,8 @@ jobs:
       - name: 6. 🚢 Build & Push Docker Image
         uses: mr-smithers-excellent/docker-build-push@v6
         env:
+          ENVIRONMENT: ${{ ( env.BUILD_PROD && 'prod' ) || ( env.BUILD_DEV && 'dev' ) || false }}
+          DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/hero300:${{ env.BUILD_SRV }}-
           TAGS: ${{ env.BUILD_PROD && [ '${ env.DOCKER_IMAGE }latest', '${ env.DOCKER_IMAGE }${ env.BUILD_TAG }' ] || ['${ env.DOCKER_IMAGE }dev'] }}
         with:
           image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}
