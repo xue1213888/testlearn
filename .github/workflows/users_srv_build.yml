@@ -25,7 +25,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: -1. check 是否允许构建
-        run: if [[ ${{ env.BUILD_DEV }} == false && ${{ env.BUILD_PROD }} == false ]]; then exit 1; fi
+        run: |
+          if [[ ${{ env.BUILD_DEV }} == false && ${{ env.BUILD_PROD }} == false ]]; then 
+            echo "当前不允许构建"
+            exit 1
+          fi
       - name: 0. 🌍 Set Time Zone
         uses: szenius/set-timezone@v1.1
         with:
