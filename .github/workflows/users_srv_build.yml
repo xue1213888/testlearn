@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: echo git
-        run: echo ${{ github }}
+        run: echo ${{ $github }}
       - name: 0. 🌍 Set Time Zone
         uses: szenius/set-timezone@v1.1
         with:
