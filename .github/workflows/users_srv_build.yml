@@ -20,9 +20,9 @@ env:
   BUILD_TAG: ${{ github.ref_name }}
 
 jobs:
+  if: ${{ env.BUILD_DEV || env.BUILD_PROD }}
   build_and_test:
     runs-on: ubuntu-latest
-    if: ${{ env.BUILD_DEV || env.BUILD_PROD }}
     steps:
       - name: echo git
         env:
