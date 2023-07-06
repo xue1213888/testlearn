@@ -23,10 +23,10 @@ jobs:
     steps:
       - name: 0. echo
         env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
           CONTEXT: ${{ github }}
         run: |
           echo "1"
-          echo ${{ GITHUB_BASE_REF }}
 
       - name: 1. 📦 Checkout Repository
         uses: actions/checkout@v3
