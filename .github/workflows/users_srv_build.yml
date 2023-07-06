@@ -4,39 +4,71 @@ on:
   push:
     branches:
       - main
-      - dev/default
-    paths:
-      - 'services/users_srv/**'
+      - dev
+  #    paths:
+  #      - 'services/users_srv/**'
+    tags:
+      - 'v*'
+  workflow_dispatch:
 
 env:
-  BUILD_PATH: './services/users_srv'
+  BUILD_SRV: 'users_srv'
+  BUILD_PATH: './services'
   BUILD_NAME: 'srv'
-  ENVIRONMENT:
+  BUILD_PROD: ${{ (github.ref_type == 'tag') && (github.event.base_ref == 'refs/heads/main') }}
+  BUILD_DEV: ${{ (github.ref == 'refs/heads/main') || (github.ref == 'refs/heads/dev') }}
+  BUILD_TAG: ${{ github.ref_name }}
 
 jobs:
-  test-jobs:
+  build_and_test:
     runs-on: ubuntu-latest
+    env:
+      ENVIRONMENT: ${{ ( env.BUILD_PROD && 'prod' ) || ( env.BUILD_DEV && 'dev' ) || false }}
+      DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/hero300:${{ env.BUILD_SRV }}-
+    if: ${{ env.ENVIRONMENT }}
     steps:
-      - name: 1. 📦 Checkout Code
+      - name: echo git
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo '$GITHUB_CONTEXT'
+      - name: 0. 🌍 Set Time Zone
+        uses: szenius/set-timezone@v1.1
+        with:
+          timezoneLinux: "Asia/Shanghai"
+      - name: 1. 📦 Checkout Repository
         uses: actions/checkout@v3
-      - name: 2. 🚀 Set up Go
+      - name: 2. 🚀 Setup Go Environment
         uses: actions/setup-go@v4
         with:
           go-version-file: 'go.mod'
-      - name: 3. 🧹 Code Linting
+      - name: 3. 🧹 Lint Code
         uses: golangci/golangci-lint-action@v3
         with:
           version: v1.53
-      - name: 4. 🧪 Test Code & 🏗️ Build
+      - name: 4. 🧪 Test & 🏗️ Build Services
         run: |
-          echo ${{ env.BUILD_PATH }}
-          echo ${{ env.BUILD_NAME }}
-          echo ${{ github }}
           go mod tidy
-          go build -o ${{ env.BUILD_NAME }} ${{ env.BUILD_PATH }}/main.go
-          go test -v ${{ env.BUILD_PATH }}
-          ./${{ env.BUILD_NAME }}
-      - name: 5. ✅ Verify Results
-        run: |
-          ls
-          pwd
+          GOOS=linux GOARCH=amd64 go build -o ${{ env.BUILD_NAME }}-amd64 ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/main.go
+          GOOS=linux GOARCH=arm64 go build -o ${{ env.BUILD_NAME }}-arm64 ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/main.go
+          go test -v ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}
+          cp ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/conf/${{ env.ENVIRONMENT }}.yml ./config.yml
+
+      - name: 5. 🐳 Customize Docker driver
+        uses: docker/setup-buildx-action@v2
+        with:
+          driver-opts: image=moby/buildkit:v0.11.0
+
+      - name: 6. 🚢 Build & Push Docker Image
+        uses: mr-smithers-excellent/docker-build-push@v6
+        env:
+          TAGS: ${{ env.BUILD_PROD && [ '${ env.DOCKER_IMAGE }latest', '${ env.DOCKER_IMAGE }${ env.BUILD_TAG }' ] || ['${ env.DOCKER_IMAGE }dev'] }}
+        with:
+          image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}
+          registry: docker.io
+          multiPlatform: true
+          dockerfile: './Dockerfile'
+          overrideDriver: true
+          tags: ${{ env.TAGS }}
+          platform: linux/amd64,linux/arm64
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
