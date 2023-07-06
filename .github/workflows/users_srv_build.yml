@@ -57,13 +57,11 @@ jobs:
 
       - name: 6. 🚢 Set Docker Image Tags
         id: set_tags
-        env:
-          BUILD_ENV: ${{ ( env.BUILD_PROD && 'prod' ) && ( env.BUILD_DEV && 'dev' ) && '' }}
         run: |
           TAGS=()
-          if [[ "${{ env.BUILD_ENV }}" == "prod" ]]; then
+          if [[ "${{ env.BUILD_PROD }}" ]]; then
             TAGS=("${{ env.BUILD_SRV }}-latest","${{ env.BUILD_SRV }}-prod")
-          elif [[ "${{ env.BUILD_ENV }}" == "dev" ]]; then
+          elif [[ "${{ env.BUILD_DEV }}" ]]; then
             TAGS=("${{ env.BUILD_SRV }}-dev")
           fi
           echo "TAGS=${TAGS}" >> $GITHUB_ENV
