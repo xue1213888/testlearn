@@ -55,12 +55,21 @@ jobs:
         with:
           driver-opts: image=moby/buildkit:v0.11.0
 
-      - name: 6. 🚢 Build & Push Docker Image
-        uses: mr-smithers-excellent/docker-build-push@v6
+      - name: 6. 🚢 Set Docker Image Tags
+        id: set_tags
         env:
-          ENVIRONMENT: ${{ ( env.BUILD_PROD && 'prod' ) || ( env.BUILD_DEV && 'dev' ) || false }}
-          DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/hero300:${{ env.BUILD_SRV }}-
-          TAGS: ${{ env.BUILD_PROD && [ '${ env.DOCKER_IMAGE }latest', '${ env.DOCKER_IMAGE }${ env.BUILD_TAG }' ] || ['${ env.DOCKER_IMAGE }dev'] }}
+          IMAGE_PREFIX: ${{ secrets.DOCKERHUB_USERNAME }}/hero300:${{ env.BUILD_SRV }}-
+          BUILD_ENV: ${{ ( env.BUILD_PROD && 'prod' ) || ( env.BUILD_DEV && 'dev' ) || '' }}
+        run: |
+          if [[ "${{ env.BUILD_ENV }}" == "prod" ]]; then
+            TAGS="${env.IMAGE_PREFIX}latest,${env.IMAGE_PREFIX}prod"
+          elif [[ "${{ env.BUILD_ENV }}" == "dev" ]]; then
+            TAGS="${env.IMAGE_PREFIX}dev"
+          fi
+          echo "TAGS=${TAGS}" >> $GITHUB_ENV
+
+      - name: 7. 🚢 Build & Push Docker Image
+        uses: mr-smithers-excellent/docker-build-push@v6
         with:
           image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}
           registry: docker.io
@@ -71,3 +80,20 @@ jobs:
           platform: linux/amd64,linux/arm64
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+#      - name: 6. 🚢 Build & Push Docker Image
+#        uses: mr-smithers-excellent/docker-build-push@v6
+#        env:
+#          ENVIRONMENT: ${{ ( env.BUILD_PROD && 'prod' ) || ( env.BUILD_DEV && 'dev' ) || false }}
+#          DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/hero300:${{ env.BUILD_SRV }}-
+#          TAGS: ${{ env.BUILD_PROD && [ '${ env.DOCKER_IMAGE }latest', '${ env.DOCKER_IMAGE }${ env.BUILD_TAG }' ] || ['${ env.DOCKER_IMAGE }dev'] }}
+#        with:
+#          image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}
+#          registry: docker.io
+#          multiPlatform: true
+#          dockerfile: './Dockerfile'
+#          overrideDriver: true
+#          tags: ${{ env.TAGS }}
+#          platform: linux/amd64,linux/arm64
+#          username: ${{ secrets.DOCKERHUB_USERNAME }}
+#          password: ${{ secrets.DOCKERHUB_TOKEN }}
