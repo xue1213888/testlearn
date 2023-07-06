@@ -15,7 +15,7 @@ env:
   BUILD_SRV: 'users_srv'
   BUILD_PATH: './services'
   BUILD_NAME: 'srv'
-  ENVIRONMENT: ${{ (github.ref == 'refs/heads/main' && 'prod') || (github.ref == 'refs/heads/dev/default' && 'dev') }}
+  ENVIRONMENT: ${{ (github.ref == 'refs/heads/main' && 'prod') || (github.ref == 'refs/heads/dev/default' && 'dev') || 'prod' }}
   TAGS:
 
 jobs:
