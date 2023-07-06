@@ -5,10 +5,10 @@ on:
     branches:
       - main
       - dev/default
-#    paths:
-#      - 'services/users_srv/**'
-#    tags:
-#      - 'v*'
+  #    paths:
+  #      - 'services/users_srv/**'
+  #    tags:
+  #      - 'v*'
   workflow_dispatch:
 
 env:
@@ -22,6 +22,25 @@ jobs:
   build_and_test:
     runs-on: ubuntu-latest
     steps:
+      - name: Modify Docker tags
+        id: modify_tags
+        env:
+          INPUT_TAGS: '["docker.io/xue1213888/hero300:v1.10","docker.io/xue1213888/hero300:latest"]'
+          PREFIX: "users_srv-"
+        run: |
+          tags=""
+          tags_list=(${{ fromJSON(env.INPUT_TAGS) }})
+          for tag in "${tags_list[@]}"; do
+          modified_tag=$(echo $tag | sed "s/\(.*\)\(:.*\)/\1:${env.PREFIX}\2/")
+          tags="${tags}${tags:+,}\"${modified_tag}\""
+          done
+          modified_tags_json="[$tags]"
+          echo "::set-output name=modified_tags::$modified_tags_json"
+
+      - name: Display modified Docker tags
+        run: |
+          echo "Modified Docker Tags: ${{ steps.modify_tags.outputs.modified_tags }}" 
+          exit 1;
       - name: 0. 🌍 Set Time Zone
         uses: szenius/set-timezone@v1.1
         with:
@@ -60,7 +79,6 @@ jobs:
       - name: temp very
         run: |
           echo ${{ steps.meta.outputs.tags }}
-          sed -i 's/:/:users_srv-/g' ${{ steps.meta.outputs.tags }}
       - name: 6. 🚢 Build & Push Docker Image
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
