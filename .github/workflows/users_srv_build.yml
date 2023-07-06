@@ -24,7 +24,7 @@ jobs:
       - name: 0. echo
         env:
           CONTEXT: ${{ github }}
-        run: echo "CONTEXT=${CONTEXT}"
+        run: echo "1"
 
       - name: 1. 📦 Checkout Repository
         uses: actions/checkout@v3
