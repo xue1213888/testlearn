@@ -59,9 +59,9 @@ jobs:
         id: set_tags
         run: |
           TAGS=()
-          if [[ env.BUILD_PROD ]]; then
+          if [[ env.BUILD_PROD == true ]]; then
             TAGS=("${{ env.BUILD_SRV }}-latest","${{ env.BUILD_SRV }}-prod")
-          elif [[ env.BUILD_DEV ]]; then
+          elif [[ env.BUILD_DEV == true ]]; then
             TAGS=("${{ env.BUILD_SRV }}-dev")
           fi
           echo "TAGS=${TAGS}" >> $GITHUB_ENV
@@ -78,20 +78,3 @@ jobs:
           platform: linux/amd64,linux/arm64
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-#      - name: 6. 🚢 Build & Push Docker Image
-#        uses: mr-smithers-excellent/docker-build-push@v6
-#        env:
-#          ENVIRONMENT: ${{ ( env.BUILD_PROD && 'prod' ) || ( env.BUILD_DEV && 'dev' ) || false }}
-#          DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/hero300:${{ env.BUILD_SRV }}-
-#          TAGS: ${{ env.BUILD_PROD && [ '${ env.DOCKER_IMAGE }latest', '${ env.DOCKER_IMAGE }${ env.BUILD_TAG }' ] || ['${ env.DOCKER_IMAGE }dev'] }}
-#        with:
-#          image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}
-#          registry: docker.io
-#          multiPlatform: true
-#          dockerfile: './Dockerfile'
-#          overrideDriver: true
-#          tags: ${{ env.TAGS }}
-#          platform: linux/amd64,linux/arm64
-#          username: ${{ secrets.DOCKERHUB_USERNAME }}
-#          password: ${{ secrets.DOCKERHUB_TOKEN }}
