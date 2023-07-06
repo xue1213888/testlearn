@@ -63,9 +63,9 @@ jobs:
         run: |
           TAGS=""
           if [[ "${{ env.BUILD_ENV }}" == "prod" ]]; then
-            TAGS="${env.IMAGE_PREFIX}latest,${env.IMAGE_PREFIX}prod"
+            TAGS="${{ env.IMAGE_PREFIX }}latest,${{ env.IMAGE_PREFIX }}prod"
           elif [[ "${{ env.BUILD_ENV }}" == "dev" ]]; then
-            TAGS="${env.IMAGE_PREFIX}dev"
+            TAGS="${{ env.IMAGE_PREFIX }}dev"
           fi
           echo "TAGS=${TAGS}" >> $GITHUB_ENV
 
