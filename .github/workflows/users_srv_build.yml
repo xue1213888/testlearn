@@ -10,7 +10,6 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
-
 env:
   BUILD_SRV: 'users_srv'
   BUILD_PATH: './services'
