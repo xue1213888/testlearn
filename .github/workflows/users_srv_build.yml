@@ -24,7 +24,7 @@ jobs:
       - name: 0. echo
         env:
           GITHUB_BASE_REF: ${{ github.base_ref }}
-          CONTEXT: ${{ github }}
+          CONTEXT: ${{ toJson(github) }}
         run: |
           echo "1"
 
