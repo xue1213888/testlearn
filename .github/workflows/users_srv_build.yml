@@ -52,23 +52,11 @@ jobs:
         with:
           image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}
           registry: docker.io
-          addLatest: true
-          multiPlatform: true
-          dockerfile: './Dockerfile.amd64'
-          overrideDriver: true
-          platform: linux/amd64
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - uses: mr-smithers-excellent/docker-build-push@v6
-        name: Build & push Docker image arm64
-        with:
-          image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}
-          registry: docker.io
           addLatest: ${{ env.ENVIRONMENT == 'prod' }}
           multiPlatform: true
-          dockerfile: './Dockerfile.arm64'
+          dockerfile: './Dockerfile'
           overrideDriver: true
-          platform: linux/arm64
+          platform: linux/amd64,linux/arm64
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 #      - name: 5. 🧑‍🔧 Login to Docker Hub
