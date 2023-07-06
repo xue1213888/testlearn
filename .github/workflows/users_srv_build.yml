@@ -2,8 +2,8 @@ name: 'Build and Test Microservice'
 run-name: 🧑‍💻 ${{ github.actor }} UserSrv Build and Test.
 on:
   push:
-    paths:
-      - 'services/users_srv/**'
+#    paths:
+#      - 'services/users_srv/**'
     branches:
       - main
       - dev
@@ -24,7 +24,9 @@ jobs:
       - name: 0. echo
         env:
           CONTEXT: ${{ github }}
-        run: echo "1"
+        run: |
+          echo "1"
+          echo ${{ GITHUB_BASE_REF }}
 
       - name: 1. 📦 Checkout Repository
         uses: actions/checkout@v3
