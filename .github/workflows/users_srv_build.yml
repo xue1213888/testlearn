@@ -64,7 +64,7 @@ jobs:
         with:
           image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BUILD_SRV }}
           registry: docker.io
-          addLatest: true
+          addLatest: ${{ env.ENVIRONMENT == 'prod' }}
           multiPlatform: true
           dockerfile: './Dockerfile.arm64'
           overrideDriver: true
