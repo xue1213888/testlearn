@@ -59,9 +59,9 @@ jobs:
         id: set_tags
         run: |
           TAGS=()
-          if [[ env.BUILD_PROD == true ]]; then
+          if [[ ${{env.BUILD_PROD}} == true ]]; then
             TAGS=("${{ env.BUILD_SRV }}-latest","${{ env.BUILD_SRV }}-prod")
-          elif [[ env.BUILD_DEV == true ]]; then
+          elif [[ ${{env.BUILD_DEV}} == true ]]; then
             TAGS=("${{ env.BUILD_SRV }}-dev")
           fi
           echo "TAGS=${TAGS}" >> $GITHUB_ENV
