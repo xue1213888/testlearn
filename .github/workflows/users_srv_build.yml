@@ -73,4 +73,3 @@ jobs:
           platform: linux/amd64,linux/arm64
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-#
