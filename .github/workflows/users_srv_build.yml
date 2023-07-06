@@ -20,11 +20,11 @@ env:
   BUILD_TAG: ${{ github.ref_name }}
 
 jobs:
-  if: ${{ env.BUILD_DEV || env.BUILD_PROD }}
   build_and_test:
     runs-on: ubuntu-latest
     steps:
       - name: echo git
+        if: ${{ env.BUILD_DEV || env.BUILD_PROD }}
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo '$GITHUB_CONTEXT'
