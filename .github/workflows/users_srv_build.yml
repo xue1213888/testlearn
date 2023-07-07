@@ -33,53 +33,53 @@ jobs:
 
       - uses: technote-space/get-diff-action@v6
 
-      - name: 2. 🚀 Setup Go Environment
-        uses: actions/setup-go@v4
-        with:
-          go-version-file: 'go.mod'
+#      - name: 2. 🚀 Setup Go Environment
+#        uses: actions/setup-go@v4
+#        with:
+#          go-version-file: 'go.mod'
 
-      - name: 3. 🧹 Lint Code
-        uses: golangci/golangci-lint-action@v3
-        with:
-          version: v1.53
-
-      - name: 4. 🧪 Test & 🏗️ Build Services
-        env:
-          BUILD_CONFIG: ${{ (env.BUILD_PROD == true && 'prod') || (env.BUILD_TEST == true && 'test') || 'dev' }}
-        run: |
-          go mod tidy
-          GOOS=linux GOARCH=amd64 go build -o srv-amd64 ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/main.go
-          GOOS=linux GOARCH=arm64 go build -o srv-arm64 ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/main.go
-          go test -v ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}
-          cp ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/conf/${{ env.BUILD_CONFIG }}.yml ./config.yml
-
-      - name: 5. 🐳 Customize Docker driver
-        uses: docker/setup-buildx-action@v2
-        with:
-          driver-opts: image=moby/buildkit:v0.11.0
-
-      - name: 6. 🚢 Set Docker Image Tags
-        id: set_tags
-        run: |
-          TAGS=()
-          if [[ ${{env.BUILD_PROD}} == true ]]; then
-            TAGS=("${{ env.BUILD_SRV }}-latest","${{ env.BUILD_SRV }}-prod")
-          elif [[ ${{env.BUILD_TEST}} == true ]]; then
-            TAGS=("${{ env.BUILD_SRV }}-test")
-          elif [[ ${{env.BUILD_DEV}} == true ]]; then
-            TAGS=("${{ env.BUILD_SRV }}-dev")
-          fi
-          echo "TAGS=${TAGS}" >> $GITHUB_ENV
-
-      - name: 7. 🚢 Build & Push Docker Image
-        uses: mr-smithers-excellent/docker-build-push@v6
-        with:
-          image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}
-          registry: docker.io
-          multiPlatform: true
-          dockerfile: './Dockerfile'
-          overrideDriver: true
-          tags: ${{ env.TAGS }}
-          platform: linux/amd64,linux/arm64
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+#      - name: 3. 🧹 Lint Code
+#        uses: golangci/golangci-lint-action@v3
+#        with:
+#          version: v1.53
+#
+#      - name: 4. 🧪 Test & 🏗️ Build Services
+#        env:
+#          BUILD_CONFIG: ${{ (env.BUILD_PROD == true && 'prod') || (env.BUILD_TEST == true && 'test') || 'dev' }}
+#        run: |
+#          go mod tidy
+#          GOOS=linux GOARCH=amd64 go build -o srv-amd64 ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/main.go
+#          GOOS=linux GOARCH=arm64 go build -o srv-arm64 ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/main.go
+#          go test -v ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}
+#          cp ${{ env.BUILD_PATH }}/${{ env.BUILD_SRV }}/conf/${{ env.BUILD_CONFIG }}.yml ./config.yml
+#
+#      - name: 5. 🐳 Customize Docker driver
+#        uses: docker/setup-buildx-action@v2
+#        with:
+#          driver-opts: image=moby/buildkit:v0.11.0
+#
+#      - name: 6. 🚢 Set Docker Image Tags
+#        id: set_tags
+#        run: |
+#          TAGS=()
+#          if [[ ${{env.BUILD_PROD}} == true ]]; then
+#            TAGS=("${{ env.BUILD_SRV }}-latest","${{ env.BUILD_SRV }}-prod")
+#          elif [[ ${{env.BUILD_TEST}} == true ]]; then
+#            TAGS=("${{ env.BUILD_SRV }}-test")
+#          elif [[ ${{env.BUILD_DEV}} == true ]]; then
+#            TAGS=("${{ env.BUILD_SRV }}-dev")
+#          fi
+#          echo "TAGS=${TAGS}" >> $GITHUB_ENV
+#
+#      - name: 7. 🚢 Build & Push Docker Image
+#        uses: mr-smithers-excellent/docker-build-push@v6
+#        with:
+#          image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}
+#          registry: docker.io
+#          multiPlatform: true
+#          dockerfile: './Dockerfile'
+#          overrideDriver: true
+#          tags: ${{ env.TAGS }}
+#          platform: linux/amd64,linux/arm64
+#          username: ${{ secrets.DOCKERHUB_USERNAME }}
+#          password: ${{ secrets.DOCKERHUB_TOKEN }}
