@@ -1,6 +1,10 @@
 name: 'Build and Test Microservice'
 run-name: 🧑‍💻 ${{ github.actor }} UserSrv Build and Test.
 on:
+  pull_request:
+    branches:
+      - main
+      - dev
   push:
 #    paths:
 #      - 'services/users_srv/**'
