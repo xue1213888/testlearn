@@ -17,5 +17,7 @@ runs:
   steps:
     - name: shell run
       run: |
+        echo '${inputs.diff}' | xargs -n 1 | grep -E '^services/' | awk -vFS='/' '{print $2}' | uniq
         services=$(echo '${inputs.diff}' | xargs -n 1 | grep -E '^services/' | awk -vFS='/' '{print $2}' | uniq)
+        echo "over"
       shell: bash
