@@ -9,7 +9,7 @@ inputs:
     required: true
   servers_prefix:
     description: 'servers prefix'
-    default: 'services/'
+    default: 'services'
     required: true
 
 outputs:
@@ -21,9 +21,6 @@ runs:
   steps:
     - name: file match
       run: |
-        diff="${{ inputs.diff }}"
-        servers_prefix="${{ inputs.servers_prefix }}"
-        echo "diff=${diff}"
-        echo "servers_prefix=${servers_prefix}"
-        services=$(echo "$diff" | xargs -n 1 | grep -E "^${servers_prefix}/" | awk -vFS='/' '{print $2}' | uniq)
+        services=$(echo "${{ inputs.diff }}" | xargs -n 1 | grep -E '^${{ inputs.servers_prefix }}/' | awk -vFS='/' '{print $2}' | uniq)
+        echo services=${services}
       shell: bash
