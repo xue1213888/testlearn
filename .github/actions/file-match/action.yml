@@ -1,0 +1,21 @@
+name: 'file match'
+description: 'file match'
+author: Xsc
+
+inputs:
+  diff:
+    description: 'file diff'
+    default: '.github/workflows/users_srv_build.yml' 'services/game_data_srv/conf/dev.yml' 'services/game_data_srv/conf/prod.yml' 'services/game_data_srv/conf/test.yml' 'services/game_data_srv/main.go' 'services/users_srv/conf/dev.yml' 'services/users_srv/conf/prod.yml' 'services/users_srv/conf/test.yml' 'services/users_srv/main.go'
+    required: true
+
+outputs:
+  services:
+    description: 'services name'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: shell run
+      run: |
+        services=$(echo '${inputs.diff}' | xargs -n 1 | grep -E '^services/' | awk -vFS='/' '{print $2}' | uniq)
+      shell: bash

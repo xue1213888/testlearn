@@ -26,17 +26,11 @@ jobs:
   build_and_test:
     runs-on: ubuntu-latest
     steps:
-      - name: 0. echo
-        env:
-          CONTEXT: ${{ toJson(github) }}
-        run: |
-          echo "1"
-          echo "2"
-
-      - name: 1. 📦 Checkout Repository
-        uses: actions/checkout@v3
-
-      - uses: technote-space/get-diff-action@v6
+      - uses: ./.github/actions/file-match
+        id: file_match
+        with:
+          diff: '.github/workflows/users_srv_build.yml' 'services/game_data_srv/conf/dev.yml' 'services/game_data_srv/conf/prod.yml' 'services/game_data_srv/conf/test.yml' 'services/game_data_srv/main.go' 'services/users_srv/conf/dev.yml' 'services/users_srv/conf/prod.yml' 'services/users_srv/conf/test.yml' 'services/users_srv/main.go'
+#
 
 #      - name: 2. 🚀 Setup Go Environment
 #        uses: actions/setup-go@v4
