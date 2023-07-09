@@ -26,7 +26,7 @@ jobs:
   build_and_test:
     runs-on: ubuntu-latest
     steps:
-      - uses: .github/actions/file-match
+      - uses: ./.github/actions/file-match/action.yml
         id: file_match
 #
 
