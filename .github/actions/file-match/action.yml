@@ -21,5 +21,7 @@ runs:
   steps:
     - name: file match
       run: |
-        services=$(echo ${{ inputs.diff }} | xargs -n 1 | grep -E '^${ inputs.servers_prefix }/' | awk -vFS='/' '{print $2}' | uniq)
+        diff="${{ inputs.diff }}"
+        servers_prefix="${{ inputs.servers_prefix }}"
+        services=$(echo "$diff" | xargs -n 1 | grep -E "^${servers_prefix}/" | awk -vFS='/' '{print $2}' | uniq)
       shell: bash
