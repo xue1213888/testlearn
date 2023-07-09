@@ -5,7 +5,7 @@ author: Xsc
 inputs:
   diff:
     description: 'file diff'
-    default: '.github/workflows/users_srv_build.yml' 'services/game_data_srv/conf/dev.yml' 'services/game_data_srv/conf/prod.yml' 'services/game_data_srv/conf/test.yml' 'services/game_data_srv/main.go' 'services/users_srv/conf/dev.yml' 'services/users_srv/conf/prod.yml' 'services/users_srv/conf/test.yml' 'services/users_srv/main.go'
+    default: "'.github/workflows/users_srv_build.yml' 'services/game_data_srv/conf/dev.yml' 'services/game_data_srv/conf/prod.yml' 'services/game_data_srv/conf/test.yml' 'services/game_data_srv/main.go' 'services/users_srv/conf/dev.yml' 'services/users_srv/conf/prod.yml' 'services/users_srv/conf/test.yml' 'services/users_srv/main.go'"
     required: true
 
 outputs:
